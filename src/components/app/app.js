@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {Col, Row, Container} from 'reactstrap';
 import Header from '../header';
-import CharacterPage from '../characterPage';
+import {CharacterPage, BooksPage, HousesPage, BooksItem} from '../pages';
 import RandomChar from '../randomChar';
 import ErrorMessage from '../error';
-
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import './app.css';
 
@@ -32,9 +32,10 @@ export default class App extends Component {
         if (this.state.error) {
             return <ErrorMessage/>
         }
-        const char = this.state.showRandomChar ? <RandomChar/> : null;
+        const char = this.state.showRandomChar ? <RandomChar /> : null;
         return (
-            <> 
+            <Router>
+                <div className="app"> 
                 <Container>
                     <Header />
                 </Container>
@@ -47,9 +48,21 @@ export default class App extends Component {
                                 onClick={this.toggleRandomChar}>Toggle random character</button>
                         </Col>
                     </Row>
-                    <CharacterPage/>
+
+
+                    <Route path='/' exact component={() => <h1 className="welcome">Welcome to GoT Database!</h1>} />
+                    <Route path='/characters' component={CharacterPage} />
+                    <Route path='/houses' component={HousesPage} />
+                    <Route path='/books' exact component={BooksPage} />
+                    <Route path='/books/:id' render={
+                        ({match}) => {
+                            const id = match.params.id;
+                        return <BooksItem bookId={id} />}
+                    } />
+
                 </Container>
-            </>
+                </div>
+            </Router>
         );
     }
 };
